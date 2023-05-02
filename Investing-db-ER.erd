@@ -1,0 +1,114 @@
+erdiagram InvestmentSystem
+notation=default
+
+/* Entities */
+
+entity  Client {
+    client_id: INT  key
+    first_name: VARCHAR(50)
+    last_name: VARCHAR(50)
+    email: VARCHAR(50)
+    phone: VARCHAR(20)
+    preferred_industry: VARCHAR(50) 
+}
+
+entity  Account {
+    account_id: INT key
+    client_id: INT 
+    advisor_id: INT
+    balance: DECIMAL(10 ,2)
+    account_performance: DECIMAL(5, 2)
+}
+
+entity  Investment {
+    investment_id: INT  key
+    stock_id: INT 
+    account_id: INT 
+    quantity :INT
+    purchase_price: DECIMAL(10, 2)
+    purchase_date :DATE
+}
+
+entity  Advisor {
+    advisor_id :INT  key
+    first_name: VARCHAR(50)
+    last_name: VARCHAR(50)
+    email: VARCHAR(50)
+    phone :VARCHAR(20)
+    performance: DECIMAL(5, 2)
+}
+
+entity  Transactions {
+    transaction_id: INT  key
+    investment_id :INT 
+    exchange_id :INT 
+    transaction_type: VARCHAR(50)
+    transaction_date: DATE
+    price_per_share :DECIMAL(10, 2)
+    quantity :INT
+}
+
+entity  Metric {
+    metric_id: INT  key
+    investment_id :INT 
+    metric_type :VARCHAR(50)
+    metric_date :DATE
+    value: DECIMAL(10, 2)
+}
+
+entity  Exchange {
+    exchange_id: INT  key
+    exchange_name: VARCHAR(50)
+    location :VARCHAR(50)
+}
+
+entity  Stock {
+    stock_id: INT  key
+    exchange_id: INT 
+    stock_symbol: VARCHAR(10)
+    stock_name: VARCHAR(50)
+    description: VARCHAR(100)
+    industry :VARCHAR(50)
+}
+
+/* Relationships */
+
+// A client can have multiple accounts, but each account belongs to only one client
+relationship Client_Account {
+    Client[1] -> Account[N]
+}
+
+// Each account has multiple investments, but each investment belongs to only one account
+relationship Account_Investment {
+    Account[1] -> Investment[N]
+}
+
+// Each investment belongs to only one stock, but each stock can have multiple investments
+relationship Stock_Investment {
+    Stock[1] -> Investment[N]
+}
+
+// Each investment has multiple transactions, but each transaction belongs to only one investment
+relationship Investment_Transaction {
+    Investment[1] -> Transactions[N]
+}
+
+// Each investment has multiple metrics, but each metric belongs to only one investment
+relationship Investment_Metric {
+    Investment[1] -> Metric[N]
+}
+
+// Each stock belongs to only one exchange, but each exchange can have multiple stocks
+relationship Exchange_Stock {
+    Exchange[1] -> Stock[N]
+}
+
+// Each transaction belongs to only one exchange, but each exchange can have multiple transactions
+relationship Exchange_Transaction {
+    Exchange[1] -> Transactions[N]
+}
+
+// Each advisor can have multiple accounts, but each account belongs to only one advisor
+relationship Advisor_Account {
+    Advisor[1] -> Account[N]
+}
